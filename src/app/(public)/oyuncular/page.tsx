@@ -3,6 +3,9 @@ import { listPublicActors } from "@/lib/actors/service";
 import { ActorsRoster } from "@/components/public/ActorsRoster";
 import { createMetadata } from "@/lib/seo";
 
+/** Private storage signed URLs expire; must not bake them into a static page. */
+export const dynamic = "force-dynamic";
+
 export const metadata = createMetadata({
   title: "Oyuncularımız | +Akademi Oyunculuk & Menajerlik",
   description:

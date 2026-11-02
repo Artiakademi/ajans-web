@@ -386,12 +386,16 @@ export async function addActorPhotos(actorId: string, files: File[]) {
   const admin = createAdminClient();
   const { data: existing } = await admin
     .from("actor_photos")
-    .select("sort_order")
+    .select("id, sort_order")
     .eq("actor_id", actorId)
-    .order("sort_order", { ascending: false })
-    .limit(1);
+    .order("sort_order", { ascending: true });
 
-  let nextOrder = existing?.[0]?.sort_order != null ? existing[0].sort_order + 1 : 0;
+  const rows = existing ?? [];
+  let hasCover = rows.some((p) => Number(p.sort_order) === 0);
+  let nextAppend =
+    rows.length === 0
+      ? 1
+      : Math.max(...rows.map((p) => Number(p.sort_order) || 0)) + 1;
   const uploaded: string[] = [];
 
   try {
@@ -405,13 +409,17 @@ export async function addActorPhotos(actorId: string, files: File[]) {
         .upload(path, buffer, { contentType: file.type, upsert: false });
       if (upErr) throw new Error("upload_failed");
       uploaded.push(path);
+
+      // No primary yet → first upload becomes cover (sort_order 0). Do not steal existing cover.
+      const sortOrder = !hasCover ? 0 : nextAppend++;
+      hasCover = true;
+
       const { error: rowErr } = await admin.from("actor_photos").insert({
         actor_id: actorId,
         storage_path: path,
-        sort_order: nextOrder,
+        sort_order: sortOrder,
       });
       if (rowErr) throw new Error("photo_row_failed");
-      nextOrder += 1;
     }
   } catch (e) {
     if (uploaded.length) {

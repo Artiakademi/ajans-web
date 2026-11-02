@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Actor } from "@/types";
+import { ActorCardPhoto } from "@/components/public/ActorCardPhoto";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { fullName, cn } from "@/lib/utils";
@@ -63,16 +63,12 @@ export function ActorsMarqueeSection({ actors }: { actors: Actor[] }) {
                 aria-hidden={i >= actors.length ? true : undefined}
               >
                 <div className="relative aspect-[3/4] overflow-hidden bg-bg-muted">
-                  {actor.coverPhotoUrl ? (
-                    <Image
-                      src={actor.coverPhotoUrl}
-                      alt={`${name} - +Akademi oyuncusu`}
-                      fill
-                      className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                      sizes="(max-width:640px) 42vw, (max-width:1024px) 28vw, 14vw"
-                      priority={i < 4}
-                    />
-                  ) : null}
+                  <ActorCardPhoto
+                    actor={actor}
+                    className="transition duration-700 group-hover:scale-[1.04]"
+                    sizes="(max-width:640px) 42vw, (max-width:1024px) 28vw, 14vw"
+                    priority={i < 4}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 transition group-hover:opacity-95" />
                   <div className="absolute inset-x-0 bottom-0 p-3">
                     <p className="text-sm font-medium tracking-wide text-white">

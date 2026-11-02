@@ -11,6 +11,9 @@ import { listFeaturedPublicActors } from "@/lib/actors/service";
 import { getMergedSiteSettings } from "@/lib/settings/service";
 import { createMetadata } from "@/lib/seo";
 
+/** Featured actors use private signed URLs — refresh each request. */
+export const dynamic = "force-dynamic";
+
 export const metadata = createMetadata({
   title: "+Akademi | Oyunculuk, Cast ve Menajerlik Ajansı",
   description:

@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import type { Actor, Gender } from "@/types";
+import { ActorCardPhoto } from "@/components/public/ActorCardPhoto";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input, Select } from "@/components/ui/Field";
 import { EmptyState } from "@/components/ui/StatusBadge";
@@ -243,15 +243,11 @@ export function ActorsRoster({ actors }: { actors: Actor[] }) {
                 className="group block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 <div className="relative aspect-[3/4] overflow-hidden bg-bg-muted">
-                  {actor.coverPhotoUrl ? (
-                    <Image
-                      src={actor.coverPhotoUrl}
-                      alt={`${name} - +Akademi oyuncusu`}
-                      fill
-                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                      sizes="(max-width:768px) 50vw, 25vw"
-                    />
-                  ) : null}
+                  <ActorCardPhoto
+                    actor={actor}
+                    className="transition duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width:768px) 50vw, 25vw"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-90 transition group-hover:opacity-100" />
                   <div className="absolute inset-x-0 bottom-0 p-3 md:p-4">
                     <p className="text-sm font-medium tracking-wide text-white md:text-base">

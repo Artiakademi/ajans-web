@@ -54,7 +54,10 @@ export function mapActorPhoto(
 
 export function mapActor(row: DbActorRow, photos: ActorPhoto[] = []): Actor {
   const sorted = [...photos].sort((a, b) => a.sortOrder - b.sortOrder);
-  const cover = sorted.find((p) => p.isCover)?.url || sorted[0]?.url || "";
+  // Prefer primary (sort_order 0), else first photo that has a signed URL.
+  const withUrl = sorted.filter((p) => Boolean(p.url?.trim()));
+  const cover =
+    withUrl.find((p) => p.isCover)?.url || withUrl[0]?.url || "";
   const calendarAge = row.birth_date ? calcAge(row.birth_date) : 0;
   const age =
     row.age != null && Number.isFinite(Number(row.age))

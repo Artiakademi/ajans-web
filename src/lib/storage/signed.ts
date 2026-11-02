@@ -19,9 +19,13 @@ export async function createSignedUrlMap(
   if (error || !data) return map;
 
   data.forEach((item, index) => {
-    const path = item.path || paths[index];
     const url = item.signedUrl;
-    if (path && url) map.set(path, url);
+    if (!url) return;
+    const original = paths[index];
+    const reported = item.path || original;
+    // Index both keys — Supabase may normalize path differently than DB storage_path.
+    if (original) map.set(original, url);
+    if (reported) map.set(reported, url);
   });
 
   return map;

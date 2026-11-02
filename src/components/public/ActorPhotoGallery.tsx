@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import type { Actor, ActorPhoto } from "@/types";
+import { photosWithUrl } from "@/lib/actors/cover";
 import { fullName, cn } from "@/lib/utils";
 
 export function ActorPhotoGallery({ actor }: { actor: Actor }) {
-  const photos = actor.photos.filter((p) => p.url);
+  const photos = photosWithUrl(actor.photos);
   const [active, setActive] = useState<ActorPhoto | null>(null);
   const name = fullName(actor.firstName, actor.lastName);
   const cover = photos.find((p) => p.isCover) || photos[0];
@@ -43,6 +43,7 @@ export function ActorPhotoGallery({ actor }: { actor: Actor }) {
           className="object-cover"
           sizes="(max-width:1024px) 100vw, 40vw"
           priority
+          unoptimized
         />
       </button>
 
@@ -65,6 +66,7 @@ export function ActorPhotoGallery({ actor }: { actor: Actor }) {
                 fill
                 className="object-cover"
                 sizes="100px"
+                unoptimized
               />
             </button>
           ))}
