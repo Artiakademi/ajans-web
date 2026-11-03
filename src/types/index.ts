@@ -91,7 +91,8 @@ export interface Actor {
   /** Independent of birthDate when set in DB; otherwise calendar age. */
   age: number;
   city: string;
-  gender: Gender;
+  /** Empty when not yet filled (e.g. converted from short application). */
+  gender: Gender | "";
   phone?: string;
   heightCm?: number;
   weightKg?: number;

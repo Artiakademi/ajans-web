@@ -9,7 +9,6 @@ import type { Actor, Gender } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { FormField, Input, Select, Textarea } from "@/components/ui/Field";
 import { EmptyState, PageHeader } from "@/components/ui/StatusBadge";
-import { GENDER_LABELS } from "@/config/constants";
 import { fullName, cn } from "@/lib/utils";
 
 const emptyForm = {
@@ -18,7 +17,7 @@ const emptyForm = {
   phone: "",
   birthDate: "",
   age: "",
-  gender: "kadin" as Gender,
+  gender: "kadin" as Gender | "",
   city: "",
   heightCm: "",
   weightKg: "",
@@ -93,7 +92,7 @@ export default function ActorsAdminPage() {
       phone: actor.phone || "",
       birthDate: actor.birthDate,
       age: actor.age ? String(actor.age) : "",
-      gender: actor.gender,
+      gender: actor.gender || ("" as Gender | ""),
       city: actor.city,
       heightCm: actor.heightCm ? String(actor.heightCm) : "",
       weightKg: actor.weightKg ? String(actor.weightKg) : "",
@@ -159,8 +158,12 @@ export default function ActorsAdminPage() {
     try {
       const payload = buildPayload();
 
-      if (!payload.firstName || !payload.lastName || !payload.city || !payload.gender) {
-        setError("Ad, soyad, şehir ve cinsiyet zorunlu.");
+      if (!payload.firstName || !payload.lastName || !payload.city) {
+        setError("Ad, soyad ve şehir zorunlu.");
+        return;
+      }
+      if (!editing && !payload.gender) {
+        setError("Yeni oyuncu için cinsiyet zorunlu.");
         return;
       }
 
@@ -514,9 +517,13 @@ export default function ActorsAdminPage() {
                   <Select
                     value={form.gender}
                     onChange={(e) =>
-                      setForm({ ...form, gender: e.target.value as Gender })
+                      setForm({
+                        ...form,
+                        gender: e.target.value as Gender | "",
+                      })
                     }
                   >
+                    <option value="">Seçiniz</option>
                     <option value="kadin">Kadın</option>
                     <option value="erkek">Erkek</option>
                     <option value="diger">Diğer</option>

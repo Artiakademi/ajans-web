@@ -319,8 +319,8 @@ export async function updateActor(
     firstName?: string;
     lastName?: string;
     phone?: string;
-    birthDate?: string;
-    gender?: Gender;
+    birthDate?: string | null;
+    gender?: Gender | "" | null;
     city?: string;
     heightCm?: number | null;
     weightKg?: number | null;
@@ -341,7 +341,7 @@ export async function updateActor(
   if (patch.lastName !== undefined) payload.last_name = patch.lastName;
   if (patch.phone !== undefined) payload.phone = emptyToNull(patch.phone);
   if (patch.birthDate !== undefined) payload.birth_date = emptyToNull(patch.birthDate);
-  if (patch.gender !== undefined) payload.gender = patch.gender;
+  if (patch.gender !== undefined) payload.gender = emptyToNull(patch.gender);
   if (patch.city !== undefined) payload.city = patch.city;
   if (patch.heightCm !== undefined) payload.height_cm = patch.heightCm;
   if (patch.weightKg !== undefined) payload.weight_kg = patch.weightKg;
@@ -559,13 +559,8 @@ export async function convertApplicationToActor(
   }
   if (!app) throw new Error("application_not_found");
 
-  const missing: string[] = [];
-  if (!app.birth_date) missing.push("doğum tarihi");
-  if (!app.gender) missing.push("cinsiyet");
-  if (missing.length) {
-    throw new Error(`missing_profile:${missing.join(",")}`);
-  }
-
+  // Short public applications may omit birth_date / gender — allow convert;
+  // staff completes profile later in Dashboard > Oyuncular.
   const { data: appPhotos, error: photosErr } = await admin
     .from("application_photos")
     .select("storage_path, sort_order")
@@ -584,17 +579,17 @@ export async function convertApplicationToActor(
     .insert({
       first_name: app.first_name,
       last_name: app.last_name,
-      phone: app.phone,
-      birth_date: app.birth_date,
+      phone: app.phone || null,
+      birth_date: app.birth_date || null,
       age: app.age ?? null,
-      gender: app.gender,
+      gender: app.gender || null,
       city: app.city,
-      height_cm: app.height_cm,
-      weight_kg: app.weight_kg,
-      hair_color: app.hair_color ?? null,
-      eye_color: app.eye_color ?? null,
-      experience: app.experience,
-      projects: app.projects ?? null,
+      height_cm: app.height_cm ?? null,
+      weight_kg: app.weight_kg ?? null,
+      hair_color: app.hair_color || null,
+      eye_color: app.eye_color || null,
+      experience: app.experience || null,
+      projects: app.projects || null,
       active: true,
       is_public: false,
       is_featured: false,

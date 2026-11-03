@@ -32,7 +32,7 @@ export default function ActorDetailPage() {
     ["Telefon", actor.phone],
     ["Doğum tarihi", actor.birthDate],
     ["Yaş", actor.age],
-    ["Cinsiyet", GENDER_LABELS[actor.gender]],
+    ["Cinsiyet", actor.gender ? GENDER_LABELS[actor.gender] : undefined],
     ["Şehir", actor.city],
     ["Boy", actor.heightCm ? `${actor.heightCm} cm` : undefined],
     ["Kilo", actor.weightKg ? `${actor.weightKg} kg` : undefined],
